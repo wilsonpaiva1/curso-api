@@ -3,6 +3,7 @@ package com.wilsonpaiva.testejunit.services.impl;
 import com.wilsonpaiva.testejunit.domain.User;
 import com.wilsonpaiva.testejunit.domain.dto.UserDTO;
 import com.wilsonpaiva.testejunit.repositories.UserRepository;
+import com.wilsonpaiva.testejunit.services.exceptions.ObjectNotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -51,9 +52,18 @@ class UserServiceImplTest {
         assertEquals(ID,response.getId());
         assertEquals(NAME,response.getName());
         assertEquals(PASSWORD,response.getPassword());
-
     }
 
+    @Test
+    void whenFindByIdThenReturnAnObjectNotFoundException(){
+        when(repository.findById(anyInt())).thenThrow(new ObjectNotFoundException("Objeto não encontrado."));
+        try {
+            service.findById(ID);
+        }catch (Exception ex){
+            assertEquals(ObjectNotFoundException.class,ex.getClass());
+            assertEquals("Objeto não encontrado.",ex.getMessage());
+        }
+    }
     @Test
     void findAll() {
     }
